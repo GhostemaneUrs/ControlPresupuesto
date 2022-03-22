@@ -118,6 +118,12 @@ main {
   background-color: var(--color-gray-light);
 }
 
+.formulario input[type="number"]::-webkit-inner-spin-button,
+.formulario input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .formulario input[type="submit"] {
   background-color: #1048a4;
   border: none;
