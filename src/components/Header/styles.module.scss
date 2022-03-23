@@ -1,0 +1,15 @@
+/* Container */
+
+.container_header {
+  display: flex;
+  padding: 3rem 0;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Styles */
+
+.title {
+  color: var(--color-white);
+  text-transform: uppercase;
+}
