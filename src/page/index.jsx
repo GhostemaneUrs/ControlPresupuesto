@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { formatAmount } from "../helpers/functions";
 import Header from "../components/Header/Header";
 import NewBudget from "../components/NewBudget/NewBudget";
 import BudgetControl from "../components/BudgetControl/BudgetControl";
+import FilterExpenses from "../components/FilterExpenses/FilterExpenses";
 import ListBudget from "../components/ListBudget/ListBudget";
 import NewBudgetModal from "../components/NewBudgetModal/NewBudgetModal";
 import newBudgetImg from "../assets/img/nuevo-gasto.svg";
@@ -18,7 +18,9 @@ const index = () => {
       ? JSON.parse(localStorage.getItem("Expenses"))
       : []
   );
+  const [filter, setFilter] = useState("");
   const [expensesEdit, setExpensesEdit] = useState({});
+  const [expensesFilter, setExpensesFilter] = useState([]);
   const [isValidBudget, setIsValidBudget] = useState(false);
   const [isActiveModal, setIsActiveModal] = useState(false);
   const [isAnimateModal, setIsAnimateModal] = useState(false);
@@ -31,6 +33,16 @@ const index = () => {
       }, 500);
     }
   }, [expensesEdit]);
+
+  useEffect(() => {
+    if (filter) {
+      const expensesFilter = expenses.filter(
+        (expense) => expense.category === filter
+      );
+      setExpensesFilter(expensesFilter);
+      console.log(expensesFilter);
+    }
+  }, [filter]);
 
   useEffect(() => {
     localStorage.setItem("Budget", budget ?? 0);
@@ -76,15 +88,22 @@ const index = () => {
     const updateExpense = expenses.filter((item) => item.id !== id);
     setExpenses(updateExpense);
   };
+
   return (
     <>
-      <div className={isActiveModal ? "fijar" : ""}>
-        <div className="container-bg">
+      <div className="fijar">
+        <div className="container-bg mb-8">
           <Header />
           <div className="container-1400">
             {isValidBudget ? (
               <>
-                <BudgetControl budget={budget} expenses={expenses} />
+                <BudgetControl
+                  budget={budget}
+                  setBudget={setBudget}
+                  expenses={expenses}
+                  setExpenses={setExpenses}
+                  setIsValidBudget={setIsValidBudget}
+                />
                 <div className="nuevo-gasto">
                   <img
                     src={newBudgetImg}
@@ -112,13 +131,18 @@ const index = () => {
             )}
           </div>
         </div>
-        <div>
+        <div className="container-1400">
           {isValidBudget ? (
-            <ListBudget
-              expenses={expenses}
-              setExpensesEdit={setExpensesEdit}
-              deleteExpense={deleteExpense}
-            />
+            <>
+              <FilterExpenses filter={filter} setFilter={setFilter} />
+              <ListBudget
+                expenses={expenses}
+                filter={filter}
+                expensesFilter={expensesFilter}
+                setExpensesEdit={setExpensesEdit}
+                deleteExpense={deleteExpense}
+              />
+            </>
           ) : null}
         </div>
       </div>
