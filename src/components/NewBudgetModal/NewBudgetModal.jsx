@@ -1,27 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import closeModal from "../../assets/img/cerrar.svg";
 import Message from "../Message/Message";
-import { v4 as uuidv4 } from "uuid";
+
 import { format } from "date-fns";
 
 const NewBudgetModal = ({
   saveExpense,
+  expensesEdit,
+  setExpensesEdit,
   isAnimateModal,
   setIsActiveModal,
   setIsAnimateModal,
 }) => {
-  const uniqueId = uuidv4();
+  const [idExpense, setIdExpense] = useState("");
   const [message, setMessage] = useState("");
   const [dataForm, setDataForm] = useState({
-    id: "",
     expenseName: "",
     amount: "",
     category: "",
-    date: Date.now(),
+    date: "",
   });
+
+  useEffect(() => {
+    if (Object.keys(expensesEdit).length > 0) {
+      setDataForm(expensesEdit);
+      setIdExpense(expensesEdit.id);
+    }
+  }, []);
 
   const handleCloseModal = () => {
     setIsAnimateModal(false);
+    setExpensesEdit({});
     setTimeout(() => {
       setIsActiveModal(false);
     }, 500);
@@ -37,7 +46,6 @@ const NewBudgetModal = ({
 
   const onSubmitExpense = (e) => {
     e.preventDefault();
-
     if (
       dataForm.expenseName === "" ||
       dataForm.amount === "" ||
@@ -49,9 +57,8 @@ const NewBudgetModal = ({
       }, 3000);
       return;
     }
-    dataForm.id = uniqueId;
-    dataForm.date =  format(dataForm.date, "dd/MM/yyyy");
-    saveExpense(dataForm);
+    dataForm.date = format(Date.now(), "dd/MM/yyyy");
+    saveExpense(dataForm, idExpense);
     resetForm();
   };
 
@@ -62,9 +69,12 @@ const NewBudgetModal = ({
       </div>
       <form
         className={`formulario ${isAnimateModal ? "animar" : "cerrar"}`}
+        autoComplete="off"
         onSubmit={onSubmitExpense}
       >
-        <legend>New Expense</legend>
+        <legend>
+          {expensesEdit.expenseName ? "Edit Expense" : "New Expense"}
+        </legend>
         {message && <Message type="error"> {message} </Message>}
         <div className="campo">
           <label htmlFor="expense">Expense Name</label>
@@ -106,14 +116,16 @@ const NewBudgetModal = ({
             <option value="saving">Saving</option>
             <option value="food">Food</option>
             <option value="home">Home</option>
-            <option value="miscellaniousExpense">
-              Miscellaneous Expenses
-            </option>
+            <option value="miscellaniousExpense">Miscellaneous Expenses</option>
             <option value="subscriptions">Subscriptions</option>
           </select>
         </div>
 
-        <input type="submit" value="Add Expense" id="add-expense" />
+        <input
+          type="submit"
+          value={expensesEdit.expenseName ? "Edit Expense" : "Add expense"}
+          id="add-expense"
+        />
       </form>
     </div>
   );
