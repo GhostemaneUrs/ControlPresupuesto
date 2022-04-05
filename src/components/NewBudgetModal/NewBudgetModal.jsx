@@ -116,8 +116,10 @@ const NewBudgetModal = ({
             <option value="saving">Saving</option>
             <option value="food">Food</option>
             <option value="home">Home</option>
-            <option value="miscellaniousExpense">Miscellaneous Expenses</option>
+            <option value="health">Health</option>
+            <option value="leisure">Leisure</option>
             <option value="subscriptions">Subscriptions</option>
+            <option value="miscellaniousExpense">Miscellaneous Expenses</option>
           </select>
         </div>
 
